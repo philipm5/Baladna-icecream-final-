@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 110%; /* Increase font size by 10% */
+            background: url('static/images/blurr image.png') no-repeat center center fixed;
+            background-size: cover;
+            color: #333;
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            backdrop-filter: blur(5px); /* Apply blur effect */
+        }
+
+        h2 {
+            color: #000000;
+            margin-bottom: 30px;
+            font-size: 2.2rem; /* Increase font size by 10% */
+            text-align: center;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .sidebar {
+            flex: 0 0 250px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-right: 20px;
+            height: 70vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .sidebar img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 20px;
+        }
+
+        .sidebar .user-info {
+            text-align: center;
+        }
+
+        .sidebar .user-info h4 {
+            margin-top: 10px;
+            font-size: 1.1rem; /* Increase font size by 10% */
+        }
+
+        .view-employee-button, .view-employee-button:focus {
+            display: block;
+            padding: 10px 20px;
+            margin: 10px auto;
+            background-color: transparent;
+            border: 2px solid #68696a;
+            border-radius: 8px;
+            color: #080808;
+            text-align: center;
+            cursor: pointer;
+            font-size: 1.1rem; /* Increase font size by 10% */
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            width: 60%;
+            max-width: 200px;
+        }
+
+        .view-employee-button:hover {
+            background-color: #080808;
+            color: rgb(251, 251, 253);
+        }
+
+        .main-content {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            flex: 1;
+            padding: 20px;
+            margin: 0 10px;
+            text-align: center;
+            color: rgb(45, 42, 42);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            font-size: 1.1rem; /* Increase font size by 10% */
+        }
+
+        .add-button { background-color: #757373; }
+        .update-button { background-color: #757373; }
+        .delete-button { background-color: #757373; }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .card img {
+            width: 44px; /* Increase size by 10% */
+            height: 44px; /* Increase size by 10% */
+        }
+
+        .card span {
+            margin-left: 50px;
+        }
+
+        .pictures-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .pictures-container img {
+            flex: 1;
+            margin: 0 10px;
+            width: calc(50% - 20px);
+            height: 330px; /* Increase size by 10% */
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-popup {
+            display: none;
+            z-index: 1000;
+            position: fixed;
+            top: 50%;
+            left: 58%;
+            transform: translate(-50%, -50%);
+            padding: 22px; /* Increase padding by 10% */
+            background-color: rgb(143, 139, 139);
+            border: 5px solid #6d6e71;
+            border-radius: 4px;
+            box-shadow: 0 0 20px rgba(146, 147, 147, 0.655);
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .form-popup h3 {
+            color: #fafcfd;
+            margin-bottom: 16.5px; /* Increase margin by 10% */
+        }
+
+        .form-popup input[type="text"],
+        .form-popup input[type="number"],
+        .form-popup input[type="date"] {
+            width: 100%;
+            padding: 13.2px; /* Increase padding by 10% */
+            margin-bottom: 16.5px; /* Increase margin by 10% */
+            border: 1px solid #030303;
+            border-radius: 4px;
+            text-align: center;
+            box-sizing: border-box;
+            background-color: #fefdfd;
+            color: #0b0b0b;
+            font-size: 1.25rem; /* Increase input text size */
+        }
+
+        .form-popup button {
+            padding: 13.2px 22px; /* Increase padding by 10% */
+            background-color: #4a4b4c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 11px; /* Increase margin by 10% */
+        }
+
+        .form-popup button:hover {
+            background-color: #5a5a5c;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0);
+            z-index: 500;
+        }
+    </style>
+</head>
+<body>
+    <h2>Admin Dashboard</h2>
+
+    <div class="container">
+        <div class="sidebar">
+            <div class="user-info">
+                <img src="static/images/profile picture.jpg" alt="User Profile">
+                <h4>Baladna Main</h4>
+            </div>
+            <a href="{{ url_for('employee_list') }}" class="view-employee-button">View Employee List</a>
+            <button class="view-employee-button" onclick="location.href='/settings'">Settings</button>
+        </div>
+
+        <div class="main-content">
+            <div class="card-container">
+                <div class="card add-button" data-target="addEmployeeForm">
+                    <img src="static/images/add employee.webp" alt="Add Employee">
+                    <span>ADD Employee</span>
+                </div>
+                <div class="card update-button" data-target="updateEmployeeForm">
+                    <img src="static/images/update info employee.png" alt="Update Employee">
+                    <span>Update Employee Information</span>
+                </div>
+                <div class="card delete-button" data-target="deleteEmployeeForm">
+                    <img src="static/images/delete employee.png" alt="Delete Employee">
+                    <span>Delete Employee</span>
+                </div>
+            </div>
+
+            <!-- Pictures Under the Buttons -->
+            <div class="pictures-container">
+                <img src="static/images/picture1.jpg" alt="Picture 1">
+                <img src="static/images/picture2.jpg" alt="Picture 2">
+            </div>
+
+            <div class="pictures-container">
+                <img src="static/images/picture3.png" alt="Picture 3">
+                <img src="static/images/picture4.png" alt="Picture 4">
+            </div>
+        </div>
+    </div>
+
+    <!-- Forms -->
+    <div id="addEmployeeForm" class="form-popup">
+        <form method="post">
+            <h3>Add Employee</h3>
+            <input type="text" name="name" placeholder="Employee Name">
+            <input type="number" name="monthly_salary" placeholder="Monthly Salary">
+            <input type="text" name="phone_number" placeholder="Phone Number">
+            <input type="text" name="id_number" placeholder="ID Number" maxlength="9" pattern="\d{9}" title="Please enter exactly 9 digits">
+            <input type="text" name="start_date" placeholder="Start Date (DD/MM/YYYY)">
+            <input type="text" name="address" placeholder="Address">
+            <button type="submit" name="add_employee">Add Employee</button>
+            <button type="button" onclick="closeOverlay()">Close</button>
+        </form>
+    </div>
+
+    <div id="updateEmployeeForm" class="form-popup">
+        <form method="post">
+            <h3>Update Employee Information</h3>
+            <input type="number" name="employee_id" placeholder="Employee ID">
+            <input type="number" name="new_salary" placeholder="New Salary">
+            <input type="text" name="new_phone_number" placeholder="New Phone Number">
+            <input type="text" name="new_address" placeholder="New Address">
+            <button type="submit" name="update_employee">Update Employee</button>
+            <button type="button" onclick="closeOverlay()">Close</button>
+        </form>
+    </div>
+
+    <div id="deleteEmployeeForm" class="form-popup">
+        <form method="post">
+            <h3>Delete Employee</h3>
+            <input type="number" name="employee_id" placeholder="Employee ID">
+            <button type="submit" name="delete_employee">Delete Employee</button>
+            <button type="button" onclick="closeOverlay()">Close</button>
+        </form>
+    </div>
+
+    <div id="overlay" class="overlay" onclick="closeOverlay()"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const overlay = document.getElementById('overlay');
+            const forms = document.querySelectorAll('.form-popup');
+            const cards = document.querySelectorAll('.card');
+
+            function openForm(formId) {
+                closeAllForms(); // Close any open forms first
+                document.getElementById(formId).style.display = 'block';
+                overlay.style.display = 'block';
+            }
+
+            function closeAllForms() {
+                forms.forEach(form => form.style.display = 'none');
+                overlay.style.display = 'none';
+            }
+
+            // Bind open form functions to cards
+            cards.forEach(card => {
+                card.addEventListener('click', function () {
+                    const formId = this.getAttribute('data-target');
+                    openForm(formId);
+                });
+            });
+
+            // Close forms when clicking on the overlay
+            overlay.addEventListener('click', closeAllForms);
+
+            // Prevent form from closing when clicking inside the form
+            forms.forEach(form => {
+                form.addEventListener('click', function (event) {
+                    event.stopPropagation(); // This stops the click from propagating to the overlay
+                });
+            });
+        });
+    </script>
+</body>
+</html>

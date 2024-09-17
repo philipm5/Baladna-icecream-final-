@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee List</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Lato', sans-serif;
+            background: url('static/images/blurr image.png') no-repeat center top fixed;
+            background-size: cover;
+            color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            font-size: 1.15rem;
+        }
+
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ffffff;
+            padding-bottom: 10px;
+            font-size: 1.725rem;
+        }
+
+        .employee-container {
+            background-color: rgba(86, 84, 84, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(247, 245, 245, 0.922);
+            padding: 20px;
+            width: 80%;
+            max-width: 1200px;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .top-right {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            text-align: right;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 40px;
+            color: #f0f0f0;
+            font-size: 1.15rem;
+        }
+
+        th, td {
+            padding: 17.25px;
+            text-align: left;
+            border: 1px solid #444444;
+        }
+
+        th {
+            background-color: #1f1f1f;
+            color: #ffffff;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        tr:hover {
+            background-color: #cccccc;
+            color: #000000;
+            transform: scale(1.02);
+            transition: 0.3s ease-in-out;
+        }
+
+        tbody tr:nth-child(odd) {
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #7c7979;
+            color: #ffffff;
+        }
+
+        .name-link, .action-btn {
+            border: none;
+            padding: 11.5px 23px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16.1px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .name-link.odd-row, .action-btn.odd-row {
+            background-color: transparent;
+            color: #000000;
+        }
+
+        .name-link.even-row, .action-btn.even-row {
+            background-color: transparent;
+            color: #f0f0f0;
+        }
+
+        .name-link:hover, .action-btn:hover {
+            text-decoration: underline;
+            background-color: #cccccc;
+            color: #000000;
+        }
+
+        .back-btn {
+            background-color: #000000;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 18px;
+            padding: 15px 30px;
+        }
+
+        .back-btn:hover {
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        .normal-font {
+            font-family: 'Lato', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="employee-container">
+        <div class="top-right">
+            <a href="{{ url_for('admin_dashboard') }}" class="back-btn">Back to Admin Dashboard</a>
+        </div>
+        <h1>Employee List</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Phone Number</th>
+                    <th>ID Number</th>
+                    <th>Start Date</th>
+                    <th>Monthly Salary</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if employees %}
+                    {% for employee in employees %}
+                    <tr>
+                        <td><span class="normal-font">{{ employee.id }}</span></td>
+                        <td>
+                            <a href="{{ url_for('employee_history', employee_id=employee.id) }}" class="name-link {{ 'odd-row' if loop.index % 2 != 0 else 'even-row' }}">{{ employee.name }}</a>
+                        </td>
+                        <td><span class="normal-font">{{ employee.phone_number }}</span></td>
+                        <td><span class="normal-font">{{ employee.id_number }}</span></td>
+                        <!-- Updated to use the formatted start date -->
+                        <td><span class="normal-font">{{ employee.formatted_start_date }}</span></td>
+                        <td><span class="normal-font">{{ employee.formatted_salary }}</span></td>
+                        <td>
+                            <a href="{{ url_for('employee_details', employee_id=employee.id) }}" class="action-btn {{ 'odd-row' if loop.index % 2 != 0 else 'even-row' }}">View Details</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="7" style="text-align: center;">No employees found.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

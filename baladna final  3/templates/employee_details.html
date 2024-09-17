@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Details</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Lato', sans-serif;
+            background: url('/static/images/blurr image.png') no-repeat center top fixed;
+            background-size: cover;
+            color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            position: relative;
+            font-size: 1.15rem;
+        }
+
+        .container {
+            background-color: rgba(86, 84, 84, 0.9);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(194, 190, 190, 0.922);
+            max-width: 600px;
+            width: 100%;
+            z-index: 1;
+        }
+
+        h1 {
+            font-size: 36.8px;
+            margin-bottom: 20px;
+            color: #ffffff;
+            border-bottom: 3px solid #ffffff;
+            padding-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            color: #000000;
+            background-color: #ffffff;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #444444;
+        }
+
+        th {
+            background-color: #333333;
+            color: #f0f0f0;
+            padding: 11.5px;
+        }
+
+        td {
+            padding: 11.5px;
+            font-family: 'Lato', sans-serif;
+            color: #000000;
+        }
+
+        .form-group {
+            margin-bottom: 17.25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #f0f0f0;
+        }
+
+        .form-group input {
+            width: calc(100% - 20px);
+            padding: 11.5px;
+            border: 1px solid #666666;
+            border-radius: 4px;
+            background-color: #ffffff;
+            color: #060606;
+        }
+
+        input[type="submit"],
+        .download-btn,
+        .history-btn,
+        .back-btn {
+            background-color: #666666;
+            color: #faf9f9;
+            cursor: pointer;
+            font-size: 18.4px;
+            padding: 11.5px;
+            border: none;
+            border-radius: 4px;
+            margin-top: 11.5px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        input[type="submit"]:hover,
+        .download-btn:hover,
+        .history-btn:hover,
+        .back-btn:hover {
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        .pdf-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        .pdf-overlay iframe {
+            width: 80%;
+            height: 80%;
+            border: none;
+        }
+
+        .pdf-overlay button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #666666;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 11.5px;
+            cursor: pointer;
+        }
+
+        .pdf-overlay button:hover {
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 3;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: #222121;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 300px;
+            text-align: center;
+            border-radius: 10px;
+        }
+
+        .close-btn {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>{{ employee.name }}'s Details</h1>
+        <table>
+            <tr>
+                <th>Field</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>Month</td>
+                <td>{{ month }}</td>
+            </tr>
+            <tr>
+                <td>Number of Days</td>
+                <td>{{ number_of_days }}</td>
+            </tr>
+            <tr>
+                <td>Salary Before</td>
+                <td>{{ salary_before }}</td>
+            </tr>
+            <tr>
+                <td>Salary Per Day</td>
+                <td>{{ salary_per_day }}</td>
+            </tr>
+            <tr>
+                <td>Salary Per Hour</td>
+                <td>{{ salary_per_hour }}</td>
+            </tr>
+            <tr>
+                <td>Salary After</td>
+                <td>{{ salary_after }}</td>
+            </tr>
+            <tr>
+                <td>Holidays (Taken/14)</td>
+                <td>{{ holidays_value }}</td>
+            </tr>
+        </table>
+
+        <form id="updateForm" method="POST">
+            <div class="form-group">
+                <label for="days_absent">Absent Days:</label>
+                <input type="number" id="days_absent" name="days_absent" value="{{ days_absent }}"
+                    placeholder="Absent Days">
+            </div>
+            <div class="form-group">
+                <label for="hours_absent">Absent Hours:</label>
+                <input type="number" id="hours_absent" name="hours_absent" value="{{ hours_absent }}"
+                    placeholder="Absent Hours">
+            </div>
+            <div class="form-group">
+                <label for="extra_days">Extra Days:</label>
+                <input type="number" id="extra_days" name="extra_days" value="{{ extra_days }}" placeholder="Extra Days">
+            </div>
+            <div class="form-group">
+                <label for="extra_hours">Extra Hours:</label>
+                <input type="number" id="extra_hours" name="extra_hours" value="{{ extra_hours }}"
+                    placeholder="Extra Hours">
+            </div>
+            <div class="form-group">
+                <label for="extra_hours_1_5">Extra Hours (1.50x):</label>
+                <input type="number" id="extra_hours_1_5" name="extra_hours_1_5" value="{{ extra_hours_1_5 }}"
+                    placeholder="Extra Hours (1.50x)">
+            </div>
+            <div class="form-group">
+                <label for="advanced_payment">Advanced Payment:</label>
+                <input type="number" step="0.01" id="advanced_payment" name="advanced_payment"
+                    value="{{ advanced_payment }}" placeholder="Advanced Payment">
+            </div>
+            <div class="form-group">
+                <label for="holidays_taken">Holidays Taken:</label>
+                <input type="number" id="holidays_taken" name="holidays_taken" value="{{ employee.holidays_taken }}"
+                    placeholder="Holidays Taken">
+            </div>
+            <input type="submit" value="Update Details">
+        </form>
+
+        <!-- Modal for showing salary after update -->
+        <div id="salaryModal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn" onclick="closeModal()">&times;</span>
+                <p> Salary After: <span id="updatedSalary"></span></p>
+                <button onclick="confirmUpdate()">Confirm</button>
+            </div>
+        </div>
+
+        <a href="{{ url_for('employee_list') }}" class="back-btn">Back to Employee List</a>
+        <button onclick="showPDF()" class="download-btn">View Salary Slip (PDF)</button>
+        <button onclick="redirectToHistory()" class="history-btn">Go to PDF History</button>
+    </div>
+
+    <div id="pdfOverlay" class="pdf-overlay">
+        <iframe id="pdfFrame"></iframe>
+        <button onclick="closePDF()">Close</button>
+    </div>
+
+    <script>
+        // Show PDF overlay
+        function showPDF() {
+            var pdfOverlay = document.getElementById('pdfOverlay');
+            var pdfFrame = document.getElementById('pdfFrame');
+            pdfFrame.src = "{{ url_for('generate_pdf', employee_id=employee.id) }}";
+            pdfOverlay.style.display = "flex";
+        }
+
+        // Close PDF overlay
+        function closePDF() {
+            document.getElementById('pdfOverlay').style.display = "none";
+        }
+
+        // Redirect to history page
+        function redirectToHistory() {
+            window.location.href = "{{ url_for('employee_history', employee_id=employee.id) }}";
+        }
+
+        // Handle form submission and show modal with updated salary
+        document.getElementById('updateForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            // Calculate the new salary (adjust calculation as per backend logic)
+            const salaryBefore = parseFloat("{{ salary_before }}");
+            const daysAbsent = parseInt(document.getElementById('days_absent').value || 0);
+            const hoursAbsent = parseInt(document.getElementById('hours_absent').value || 0);
+            const extraDays = parseInt(document.getElementById('extra_days').value || 0);
+            const extraHours = parseInt(document.getElementById('extra_hours').value || 0);
+            const extraHours15 = parseInt(document.getElementById('extra_hours_1_5').value || 0);
+            const advancedPayment = parseFloat(document.getElementById('advanced_payment').value || 0);
+
+            const salaryPerDay = parseFloat("{{ salary_per_day }}");
+            const salaryPerHour = parseFloat("{{ salary_per_hour }}");
+
+            // Adjust the salary calculation according to your backend logic
+            const updatedSalary = salaryBefore - advancedPayment -
+                (daysAbsent * salaryPerDay) - (hoursAbsent * salaryPerHour) +
+                (extraDays * salaryPerDay) + (extraHours * salaryPerHour) +
+                (extraHours15 * salaryPerHour * 1.5);
+
+            document.getElementById('updatedSalary').innerText = updatedSalary.toFixed(2);
+
+            // Show the modal
+            document.getElementById('salaryModal').style.display = 'flex';
+        });
+
+        // Close the modal
+        function closeModal() {
+            document.getElementById('salaryModal').style.display = 'none';
+        }
+
+        // Confirm the update and submit the form
+        function confirmUpdate() {
+            document.getElementById('updateForm').submit();
+        }
+
+        // Clear the default value when an input is focused except holidays_taken
+        document.querySelectorAll('input[type="number"]').forEach(input => {
+            input.addEventListener('focus', function () {
+                // Clear the input on focus except holidays_taken
+                if (this.id !== 'holidays_taken') {
+                    this.value = '';
+                }
+            });
+
+            // Restore default value if left empty after focus, except for holidays_taken
+            input.addEventListener('blur', function () {
+                if (this.value === '' && this.id !== 'holidays_taken') {
+                    this.value = '0';
+                }
+            });
+        });
+
+        // Function to reset form except "Holidays Taken" when clicking outside the form
+        document.addEventListener('click', function (event) {
+            const form = document.getElementById('updateForm');
+            const holidaysInput = document.getElementById('holidays_taken');
+
+            // Check if click is outside the form and not on a modal or overlay
+            if (!form.contains(event.target) && !document.getElementById('salaryModal').contains(event.target) &&
+                !document.getElementById('pdfOverlay').contains(event.target)) {
+
+                // Store current holidays taken value
+                const holidaysValue = holidaysInput.value;
+
+                // Reset the form
+                form.reset();
+
+                // Restore holidays taken value
+                holidaysInput.value = holidaysValue;
+            }
+        });
+    </script>
+</body>
+
+</html>
